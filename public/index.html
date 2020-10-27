@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+      Please enable it to continue.</strong>
+  </noscript>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+
+</html>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script type="text/javascript">
+  var os = (function () {
+    var ua = navigator.userAgent,
+      isWindowsPhone = /(?:Windows Phone)/.test(ua),
+      isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
+      isAndroid = /(?:Android)/.test(ua),
+      isFireFox = /(?:Firefox)/.test(ua),
+      isChrome = /(?:Chrome|CriOS)/.test(ua),
+      isTablet =
+        /(?:iPad|PlayBook)/.test(ua) ||
+        (isAndroid && !/(?:Mobile)/.test(ua)) ||
+        (isFireFox && /(?:Tablet)/.test(ua)),
+      isPhone = /(?:iPhone)/.test(ua) && !isTablet,
+      isPc = !isPhone && !isAndroid && !isSymbian;
+    return {
+      isTablet: isTablet,
+      isPhone: isPhone,
+      isAndroid: isAndroid,
+      isPc: isPc
+    };
+  })();
+  if (os.isAndroid || os.isPhone) {
+    localStorage.setItem("os", "iphone");
+  } else if (os.isTablet) {
+    localStorage.setItem("os", "ipad");
+  }
+  var pm = document.body.clientWidth;
+  if (pm > 650) {
+    localStorage.setItem("os", "ipad");
+  }
+  var u = navigator.userAgent;
+  if (u.indexOf("iPhone") > -1 || u.indexOf("iOS") > -1) {
+    localStorage.setItem("equipment", "1");
+  } else {
+    localStorage.setItem("equipment", "2");
+  }
+</script>
