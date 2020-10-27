@@ -2,8 +2,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import apiConfig from '../../config/index.js'
-import md5 from 'js-md5'
-import store from '@/store'
+
 const service = axios.create({
   timeout: 300000 // 超时设置
 })
@@ -70,11 +69,6 @@ service.interceptors.request.use(
     })
     // 添加请求头
     // config.headers[key] = '...'
-    if (store.getters.config.headers) {
-      Object.keys(store.getters.config.headers).forEach(key => {
-        config.headers[key] = store.getters.config.headers[key];
-      });
-    }
     return config
   },
   error => {
@@ -116,12 +110,9 @@ service.interceptors.response.use(
 export default {
   axios,
   get: (url, data = {}, headers = {}) => {
-    const xntoken = md5(`${url}xN411`);
-    const _headers = { ...headers, xntoken };
     return new Promise((resolve, reject) => {
       service
-        .get(apiConfig.baseUrl + url, { params: data }, _headers
-        )
+        .get(apiConfig.baseUrl + url, { params: data, headers })
         .then(response => {
           resolve(response.data)
         })
@@ -174,24 +165,12 @@ export default {
     })
   },
   post: (url, data = {}, headers = {}) => {
-    const xntoken = md5(`${url}xN411`);
-    const _headers = { ...headers, xntoken };
-    const { userid, user_token } = data;
-    const userInfo = JSON.parse(window.localStorage.getItem("userinfo"));
-    if (!userid) {
-      const _userId = userInfo ? userInfo.id : 1;
-      data.userid = _userId;
-    }
-    if (!user_token) {
-      const user_token = userInfo ? md5(`${userInfo.id}c0411`) : md5(`1c0411`);
-      data.user_token = user_token;
-    }
     return new Promise((resolve, reject) => {
       service
         .post(apiConfig.baseUrl + url, data, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-            ..._headers
+            ...headers
           },
           transformRequest: [
             data => {
@@ -210,14 +189,11 @@ export default {
     })
   },
   put: (url, data = {}) => {
-    const xntoken = md5(`${url}xN411`);
-    const _headers = { ...headers, xntoken };
     return new Promise((resolve, reject) => {
       service
         .put(apiConfig.baseUrl + url, data, {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-            _headers
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
           },
           withCredentials: true,
           transformRequest: [
